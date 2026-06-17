@@ -1,0 +1,6 @@
+name = "vellinge-bilverkstad"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "."
+
+# Custom domain: vellinge-bilverkstad.silverpoint.se
+# Hanteras via Cloudflare Pages dashboard eller API efter deploy.
