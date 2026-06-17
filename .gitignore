@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local dev (om man lägger till en package.json senare)
+node_modules/
+.env
+.env.local
+.env.*.local
+
+# OS-generated temp
+tmp/
+temp/

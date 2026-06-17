@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Vellinge Bilverkstad AB - Bilverkstad i Vellinge | Service, däck &amp; reparation</title>
+  <meta name="description" content="Vellinge Bilverkstad AB hjälper dig med bilservice, bromsar, däckbyte, batteri, felsökning och reparationer i Vellinge. Boka enkelt via MECA." />
+  <meta name="theme-color" content="#003C8F" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Vellinge Bilverkstad AB - Din lokala bilverkstad i Vellinge" />
+  <meta property="og:description" content="Service, däck, bromsar, batteri och felsökning. Boka enkelt via MECA." />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts: Manrope (sans, modern, automotive-friendly). Inter avoided per design discipline. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind via CDN for fast mockup iteration -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // MECA-inspired palette: trust-first blue + signal yellow accent
+            brand: {
+              50:  '#EEF4FC',
+              100: '#D6E4F8',
+              200: '#A8C2EE',
+              300: '#7AA0E3',
+              400: '#3F6FCC',
+              500: '#0E4FB5',
+              600: '#003C8F', // primary MECA-blue
+              700: '#002F73',
+              800: '#002257',
+              900: '#001538',
+            },
+            signal: {
+              50:  '#FFF8E0',
+              100: '#FFEEB3',
+              200: '#FFE07A',
+              300: '#FFD24A',
+              400: '#FFC72C', // primary signal yellow
+              500: '#F0B400',
+              600: '#C99000',
+            },
+            ink: {
+              DEFAULT: '#0E1B2E',
+              soft:    '#1A2A44',
+              muted:   '#5B6473',
+              faint:   '#8A93A3',
+            },
+            line: '#E4E7EC',
+            canvas: '#FAFBFC',
+          },
+          fontFamily: {
+            sans: ['Manrope', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+          boxShadow: {
+            'soft': '0 1px 2px rgba(14,27,46,0.04), 0 4px 12px rgba(14,27,46,0.05)',
+            'card': '0 1px 0 rgba(14,27,46,0.04), 0 8px 24px -8px rgba(14,27,46,0.10)',
+            'lift': '0 2px 0 rgba(14,27,46,0.04), 0 16px 32px -12px rgba(14,27,46,0.18)',
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    /* Base */
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: 'Manrope', system-ui, sans-serif; color: #0E1B2E; background: #FAFBFC; }
+    * { -webkit-tap-highlight-color: transparent; }
+
+    /* Display headlines get a slight optical tightening */
+    h1, h2, h3 { letter-spacing: -0.02em; }
+    h1 { letter-spacing: -0.025em; }
+
+    /* Selection */
+    ::selection { background: #FFC72C; color: #0E1B2E; }
+
+    /* Focus visibility (a11y) */
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid #003C8F;
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    /* Hero background image with a strong workshop feel */
+    .hero-bg {
+      background-image:
+        linear-gradient(105deg, rgba(0,30,80,0.88) 0%, rgba(0,40,110,0.78) 45%, rgba(0,40,110,0.45) 100%),
+        url('https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=2000&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+    @media (max-width: 768px) {
+      .hero-bg { background-position: 65% center; }
+    }
+
+    /* Subtle grain on dark sections, only on fixed pseudo-element for perf */
+    .grain::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+
+    /* Service category accent: a soft signal-yellow corner ribbon */
+    .corner-ribbon::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 56px; height: 56px;
+      background: linear-gradient(225deg, #FFC72C 0%, #FFC72C 50%, transparent 50%);
+      border-top-right-radius: 16px;
+    }
+
+    /* Buttons tactile feedback */
+    .btn { transition: transform 160ms ease, box-shadow 200ms ease, background-color 200ms ease, color 200ms ease; }
+    .btn:active { transform: translateY(1px) scale(0.99); }
+
+    /* Underline on link hover */
+    .link-underline { position: relative; }
+    .link-underline::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: -2px;
+      height: 2px; background: #FFC72C;
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 250ms ease;
+    }
+    .link-underline:hover::after { transform: scaleX(1); }
+
+    /* Reveal on scroll (lightweight) */
+    .reveal { opacity: 0; transform: translateY(12px); transition: opacity 600ms ease, transform 600ms ease; }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* Map container */
+    .map-frame { aspect-ratio: 16/10; }
+    @media (min-width: 768px) { .map-frame { aspect-ratio: 16/9; } }
+
+    /* Print-ish typography polish for headlines */
+    .display-1 { font-weight: 800; line-height: 1.02; }
+    .display-2 { font-weight: 700; line-height: 1.08; }
+  </style>
+</head>
+
+<body class="bg-canvas text-ink antialiased">
+
+  <!-- ============================== HEADER ============================== -->
+  <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-line">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 h-16 lg:h-20 flex items-center justify-between gap-4">
+      <!-- Wordmark + MECA trust-badge (Centralens-mönster: text-wordmark vänster, MECA-badge höger) -->
+      <div class="flex items-center gap-3 min-w-0 shrink">
+        <a href="#start" class="flex items-baseline gap-2 shrink-0" aria-label="Vellinge Bilverkstad AB">
+          <span class="leading-none whitespace-nowrap">
+            <span class="block text-[15px] sm:text-base font-extrabold tracking-tight text-ink">Vellinge Bilverkstad</span>
+            <span class="block text-[10px] sm:text-[11px] font-semibold tracking-wide text-ink-muted mt-0.5">Verkstad i Vellinge</span>
+          </span>
+        </a>
+
+        <!-- MECA trust-badge (riktig MECA-logga + kort text), visas fr.o.m. md -->
+        <div class="hidden md:flex items-center gap-2 pl-3 border-l border-line h-9 shrink-0">
+          <img
+            src="images/meca-logo-dark.svg"
+            alt="MECA"
+            class="h-5 w-auto"
+            style="max-height:20px;width:auto;"
+          />
+          <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft leading-tight">
+            Ansluten verkstad
+          </span>
+        </div>
+      </div>
+
+      <!-- Desktop nav -->
+      <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-ink-soft">
+        <a href="#tjanster"   class="link-underline hover:text-brand-600">Tjänster</a>
+        <a href="#omdomen"    class="link-underline hover:text-brand-600">Omdömen</a>
+        <a href="#kontakt"    class="link-underline hover:text-brand-600">Kontakt</a>
+        <a href="#boka"       class="link-underline hover:text-brand-600">Boka tid</a>
+      </nav>
+
+      <!-- Right side actions -->
+      <div class="flex items-center gap-2">
+        <a href="tel:+4640221014" class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-ink-soft hover:text-brand-600">
+          <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          040-22 10 14
+        </a>
+        <a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener"
+           class="btn inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white text-sm font-semibold px-4 py-2.5 hover:bg-brand-700 shadow-soft">
+          Boka verkstadstid
+          <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================== HERO ============================== -->
+  <section id="start" class="relative grain">
+    <div class="hero-bg">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-12 pb-20 lg:pt-20 lg:pb-28 min-h-[640px] lg:min-h-[720px] flex items-center">
+        <div class="max-w-2xl text-white">
+          <!-- MECA-badge + tagline (Alunda-mönster) -->
+          <div class="mb-4 flex items-center gap-3">
+            <span class="inline-flex h-8 items-center rounded-md bg-white/10 px-3 ring-1 ring-inset ring-white/20">
+              <img
+                src="images/meca-logo.svg"
+                alt="MECA"
+                class="h-5 w-auto"
+                style="max-height:20px;width:auto;"
+              />
+            </span>
+            <span class="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85">
+              Ansluten verkstad i Vellinge
+            </span>
+          </div>
+
+          <h1 class="display-1 mt-5 text-4xl sm:text-5xl lg:text-6xl text-white">
+            Din lokala bilverkstad<br/>i Vellinge
+          </h1>
+
+          <p class="mt-5 text-lg lg:text-xl text-white/90 max-w-xl leading-relaxed">
+            Vi hjälper dig med service, felsökning, bromsar, däck, batteri och reparationer.
+            Boka verkstadstid enkelt online via MECA, eller ring oss direkt.
+          </p>
+
+          <!-- CTAs -->
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener"
+               class="btn inline-flex items-center gap-2 rounded-lg bg-signal-400 text-ink font-bold px-5 py-3.5 hover:bg-signal-500 shadow-soft">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              Boka verkstadstid
+            </a>
+            <a href="tel:+4640221014"
+               class="btn inline-flex items-center gap-2 rounded-lg bg-white text-brand-700 font-bold px-5 py-3.5 hover:bg-white/95 shadow-soft">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              Ring oss
+            </a>
+            <a href="#karta"
+               class="btn inline-flex items-center gap-2 rounded-lg bg-transparent text-white font-semibold px-5 py-3.5 border border-white/30 hover:bg-white/10">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Hitta hit
+            </a>
+          </div>
+
+          <!-- Trust points strip -->
+          <ul class="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl">
+            <li class="flex items-center gap-2 text-sm text-white/90">
+              <svg viewBox="0 0 24 24" class="w-5 h-5 text-signal-400 shrink-0" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <span><span class="font-bold">5/5</span> Google-betyg</span>
+            </li>
+            <li class="flex items-center gap-2 text-sm text-white/90">
+              <svg viewBox="0 0 24 24" class="w-5 h-5 text-signal-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+              <span><span class="font-bold">MECA</span>-ansluten</span>
+            </li>
+            <li class="flex items-center gap-2 text-sm text-white/90">
+              <svg viewBox="0 0 24 24" class="w-5 h-5 text-signal-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>Centralt i Vellinge</span>
+            </li>
+            <li class="flex items-center gap-2 text-sm text-white/90">
+              <svg viewBox="0 0 24 24" class="w-5 h-5 text-signal-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-2.5z"/></svg>
+              <span>Brett tjänsteutbud</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== QUICK INFO BAR ============================== -->
+  <section aria-label="Snabb information" class="bg-white border-b border-line">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 -mt-10 lg:-mt-12 relative z-10">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 rounded-2xl bg-white shadow-lift border border-line p-3 lg:p-4">
+        <!-- Card 1: Phone -->
+        <a href="tel:+4640221014" class="group flex items-start gap-3 p-3 lg:p-4 rounded-xl hover:bg-brand-50 transition-colors">
+          <span class="grid place-items-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </span>
+          <span>
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-ink-muted">Ring oss</span>
+            <span class="block text-base font-extrabold text-ink mt-0.5">040-22 10 14</span>
+          </span>
+        </a>
+        <!-- Card 2: Visit -->
+        <a href="#karta" class="group flex items-start gap-3 p-3 lg:p-4 rounded-xl hover:bg-brand-50 transition-colors">
+          <span class="grid place-items-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </span>
+          <span>
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-ink-muted">Besök oss</span>
+            <span class="block text-base font-extrabold text-ink mt-0.5">Mejsegatan 8, Vellinge</span>
+          </span>
+        </a>
+        <!-- Card 3: Book -->
+        <a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener" class="group flex items-start gap-3 p-3 lg:p-4 rounded-xl hover:bg-brand-50 transition-colors">
+          <span class="grid place-items-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          </span>
+          <span>
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-ink-muted">Boka tid</span>
+            <span class="block text-base font-extrabold text-ink mt-0.5">Smidigt via MECA</span>
+          </span>
+        </a>
+        <!-- Card 4: Reviews -->
+        <a href="#omdomen" class="group flex items-start gap-3 p-3 lg:p-4 rounded-xl hover:bg-brand-50 transition-colors">
+          <span class="grid place-items-center w-10 h-10 rounded-lg bg-signal-100 text-signal-600 group-hover:bg-signal-400 group-hover:text-ink transition-colors">
+            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+          </span>
+          <span>
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-ink-muted">Omdömen</span>
+            <span class="block text-base font-extrabold text-ink mt-0.5">5/5 i Google-betyg</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== INTRO ============================== -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+      <div class="lg:col-span-6 reveal">
+        <div class="relative rounded-2xl overflow-hidden shadow-card aspect-[4/3]">
+          <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1200&q=80"
+               alt="Bil på lyft i modern verkstadslokal"
+               class="w-full h-full object-cover" loading="lazy" />
+          <!-- Floating trust badge -->
+          <div class="absolute bottom-4 left-4 bg-white rounded-xl shadow-lift px-4 py-3 flex items-center gap-3">
+            <span class="grid place-items-center w-10 h-10 rounded-lg bg-signal-400 text-ink">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+            </span>
+            <span class="leading-tight">
+              <span class="block text-2xl font-extrabold text-ink">5/5</span>
+              <span class="block text-[11px] text-ink-muted font-semibold">Google-recensioner</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="lg:col-span-6 reveal">
+        <h2 class="display-2 text-3xl lg:text-4xl text-ink">
+          Bilservice och reparationer nära dig
+        </h2>
+        <p class="mt-5 text-lg text-ink-muted leading-relaxed max-w-xl">
+          Vellinge Bilverkstad AB hjälper bilägare i Vellinge med service, reparationer, däck, bromsar, batteri och felsökning.
+          Här får du personlig hjälp, tydliga kontaktvägar och möjlighet att boka verkstadstid enkelt online via MECA.
+        </p>
+        <p class="mt-4 text-base text-ink-muted leading-relaxed max-w-xl">
+          Vi tar hand om de flesta bilmärken och jobbar med tydliga priser och snabb återkoppling.
+          Bor du i Vellinge med omnejd har du en trygg verkstad inom räckhåll.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="#tjanster" class="btn inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white font-semibold px-5 py-3 hover:bg-brand-700">
+            Se våra tjänster
+            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+          <a href="tel:+4640221014" class="btn inline-flex items-center gap-2 rounded-lg border border-line text-ink-soft font-semibold px-5 py-3 hover:border-brand-300 hover:text-brand-700">
+            Ring 040-22 10 14
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== SERVICES ============================== -->
+  <section id="tjanster" class="py-20 lg:py-28 bg-white border-y border-line">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="max-w-2xl reveal">
+        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-600">Vad vi gör</p>
+        <h2 class="display-2 mt-2 text-3xl lg:text-4xl text-ink">Våra tjänster</h2>
+        <p class="mt-4 text-lg text-ink-muted leading-relaxed">
+          Vi hjälper dig med det mesta som rör din bil. Här är de områden vi jobbar mest med.
+        </p>
+      </div>
+
+      <div class="mt-12 grid md:grid-cols-2 gap-5 lg:gap-6">
+        <!-- Category 1: Service & underhåll -->
+        <article class="relative corner-ribbon rounded-2xl bg-canvas border border-line p-7 lg:p-8 reveal">
+          <div class="flex items-start gap-4">
+            <span class="grid place-items-center w-12 h-12 rounded-xl bg-brand-600 text-white shrink-0">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.13.69.34 1 .59"/></svg>
+            </span>
+            <div class="flex-1">
+              <h3 class="text-xl font-extrabold text-ink">Service &amp; underhåll</h3>
+              <p class="mt-1.5 text-ink-muted text-sm leading-relaxed">
+                Regelbunden service håller bilen säker, driftsäker och mer värd vid försäljning.
+              </p>
+              <ul class="mt-4 grid sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm text-ink-soft">
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Bilservice enligt tillverkarens intervall</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Oljebyte och filter</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Kamremsbyte</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Lampbyte och enklare elarbete</span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Category 2: Bromsar -->
+        <article class="relative rounded-2xl bg-canvas border border-line p-7 lg:p-8 reveal">
+          <div class="flex items-start gap-4">
+            <span class="grid place-items-center w-12 h-12 rounded-xl bg-brand-600 text-white shrink-0">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+            </span>
+            <div class="flex-1">
+              <h3 class="text-xl font-extrabold text-ink">Bromsar</h3>
+              <p class="mt-1.5 text-ink-muted text-sm leading-relaxed">
+                Bromsarna är bilens viktigaste säkerhetssystem. Vi kontrollerar, servar och byter vid behov.
+              </p>
+              <ul class="mt-4 grid sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm text-ink-soft">
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Bromsservice och inspektion</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Bromsfelsökning</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Bromsbelägg fram och bak</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Bromsskivor och belägg</span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Category 3: Däck & hjul -->
+        <article class="relative rounded-2xl bg-canvas border border-line p-7 lg:p-8 reveal">
+          <div class="flex items-start gap-4">
+            <span class="grid place-items-center w-12 h-12 rounded-xl bg-brand-600 text-white shrink-0">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3a13 13 0 0 1 0 18M12 3a13 13 0 0 0 0 18M3 12h18"/></svg>
+            </span>
+            <div class="flex-1">
+              <h3 class="text-xl font-extrabold text-ink">Däck &amp; hjul</h3>
+              <p class="mt-1.5 text-ink-muted text-sm leading-relaxed">
+                Rätt däck och rätt skick är viktigt för säkerhet, bränsleekonomi och körkänsla.
+              </p>
+              <ul class="mt-4 grid sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm text-ink-soft">
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Däckbyte och hjulskifte</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Däckförsäljning</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Däckhotell</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Balansering</span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Category 4: Batteri & felsökning -->
+        <article class="relative rounded-2xl bg-canvas border border-line p-7 lg:p-8 reveal">
+          <div class="flex items-start gap-4">
+            <span class="grid place-items-center w-12 h-12 rounded-xl bg-brand-600 text-white shrink-0">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </span>
+            <div class="flex-1">
+              <h3 class="text-xl font-extrabold text-ink">Batteri &amp; felsökning</h3>
+              <p class="mt-1.5 text-ink-muted text-sm leading-relaxed">
+                Vi hjälper dig hitta orsaken när bilen inte startar, varnar eller beter sig annorlunda.
+              </p>
+              <ul class="mt-4 grid sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm text-ink-soft">
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Batteritest</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Batteribyte</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Elektronisk felsökning</span></li>
+                <li class="flex items-start gap-2"><span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-signal-400 shrink-0"></span><span>Diagnos av varningslampor</span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="mt-10 flex flex-wrap items-center gap-4 reveal">
+        <a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener"
+           class="btn inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white font-semibold px-5 py-3 hover:bg-brand-700">
+          Boka verkstadstid
+          <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <p class="text-sm text-ink-muted">
+          Osäker på vad du behöver? Ring oss så hjälper vi dig rätt.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== WHY US ============================== -->
+  <section class="py-20 lg:py-28 bg-brand-600 text-white relative grain">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        <div class="lg:col-span-5 reveal">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-signal-400">Varför oss</p>
+          <h2 class="display-2 mt-2 text-3xl lg:text-4xl">Trygg verkstadshjälp i Vellinge</h2>
+          <p class="mt-5 text-white/85 text-lg leading-relaxed max-w-md">
+            Vi gör det enkelt att få hjälp med bilen, oavsett om du behöver service, nya däck, batteribyte eller felsökning.
+          </p>
+          <a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener"
+             class="btn mt-7 inline-flex items-center gap-2 rounded-lg bg-signal-400 text-ink font-bold px-5 py-3.5 hover:bg-signal-500">
+            Boka tid via MECA
+            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <ul class="lg:col-span-7 grid sm:grid-cols-2 gap-4 lg:gap-5 reveal">
+          <li class="rounded-2xl bg-white/8 border border-white/15 p-6 backdrop-blur-sm">
+            <div class="grid place-items-center w-10 h-10 rounded-lg bg-signal-400 text-ink mb-4">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <h3 class="text-lg font-extrabold">Lokal verkstad i Vellinge</h3>
+            <p class="mt-2 text-white/80 text-sm leading-relaxed">Nära dig, lätt att hitta till och enkel att lämna in bilen.</p>
+          </li>
+          <li class="rounded-2xl bg-white/8 border border-white/15 p-6 backdrop-blur-sm">
+            <div class="grid place-items-center w-10 h-10 rounded-lg bg-signal-400 text-ink mb-4">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <h3 class="text-lg font-extrabold">Enkel bokning via MECA</h3>
+            <p class="mt-2 text-white/80 text-sm leading-relaxed">Boka online dygnet runt eller ring oss under öppettider.</p>
+          </li>
+          <li class="rounded-2xl bg-white/8 border border-white/15 p-6 backdrop-blur-sm">
+            <div class="grid place-items-center w-10 h-10 rounded-lg bg-signal-400 text-ink mb-4">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-2.5z"/></svg>
+            </div>
+            <h3 class="text-lg font-extrabold">Service, däck &amp; reparation</h3>
+            <p class="mt-2 text-white/80 text-sm leading-relaxed">Allt på ett ställe. Du slipper åka runt mellan flera verkstäder.</p>
+          </li>
+          <li class="rounded-2xl bg-white/8 border border-white/15 p-6 backdrop-blur-sm">
+            <div class="inline-flex h-8 items-center rounded-md bg-white/10 px-3 ring-1 ring-inset ring-white/20 mb-4">
+              <img
+                src="images/meca-logo.svg"
+                alt="MECA"
+                class="h-5 w-auto"
+                style="max-height:20px;width:auto;"
+              />
+            </div>
+            <h3 class="text-lg font-extrabold">Ansluten verkstad</h3>
+            <p class="mt-2 text-white/80 text-sm leading-relaxed">Del av MECA-nätverket. Det ger dig trygghet, tydliga processer och enkel onlinebokning.</p>
+          </li>
+          <li class="rounded-2xl bg-white/8 border border-white/15 p-6 backdrop-blur-sm">
+            <div class="grid place-items-center w-10 h-10 rounded-lg bg-signal-400 text-ink mb-4">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <h3 class="text-lg font-extrabold">Tydliga kontaktvägar</h3>
+            <p class="mt-2 text-white/80 text-sm leading-relaxed">Telefon, e-post eller MECA-bokning. Du väljer det som passar dig.</p>
+          </li>
+          <li class="rounded-2xl bg-white/8 border border-white/15 p-6 backdrop-blur-sm">
+            <div class="grid place-items-center w-10 h-10 rounded-lg bg-signal-400 text-ink mb-4">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+            </div>
+            <h3 class="text-lg font-extrabold">Bra kundomdömen</h3>
+            <p class="mt-2 text-white/80 text-sm leading-relaxed">5 av 5 i betyg hos Google, baserat på recensioner från riktiga kunder.</p>
+          </li>
+          <li class="rounded-2xl bg-white/8 border border-white/15 p-6 backdrop-blur-sm">
+            <div class="grid place-items-center w-10 h-10 rounded-lg bg-signal-400 text-ink mb-4">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h3 class="text-lg font-extrabold">Personlig service</h3>
+            <p class="mt-2 text-white/80 text-sm leading-relaxed">Vi förklarar vad som behöver göras, och vad som kan vänta.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== REVIEWS ============================== -->
+  <section id="omdomen" class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        <div class="lg:col-span-5 reveal">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-600">Omdömen</p>
+          <h2 class="display-2 mt-2 text-3xl lg:text-4xl text-ink">Kunderna ger oss 5/5 i betyg</h2>
+          <p class="mt-5 text-ink-muted text-lg leading-relaxed max-w-md">
+            Vi är glada för förtroendet från våra kunder. Här är vad några av dem säger.
+          </p>
+
+          <div class="mt-7 inline-flex items-center gap-3 rounded-2xl bg-white border border-line shadow-soft px-5 py-4">
+            <div class="flex items-center gap-0.5" aria-label="5 av 5 stjärnor">
+              <svg viewBox="0 0 24 24" class="w-6 h-6 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-6 h-6 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-6 h-6 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-6 h-6 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-6 h-6 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+            </div>
+            <div class="leading-tight">
+              <p class="text-2xl font-extrabold text-ink">5,0</p>
+              <p class="text-xs text-ink-muted font-semibold">Google-recensioner</p>
+            </div>
+          </div>
+
+          <a href="https://www.google.com/maps/search/?api=1&query=Vellinge+Bilverkstad+AB" target="_blank" rel="noopener"
+             class="btn mt-6 inline-flex items-center gap-2 rounded-lg border border-line text-ink-soft font-semibold px-5 py-3 hover:border-brand-300 hover:text-brand-700">
+            Läs fler omdömen
+            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="lg:col-span-7 grid gap-5 reveal">
+          <!-- Featured review (verified) -->
+          <figure class="rounded-2xl bg-white border border-line p-7 lg:p-8 shadow-soft relative">
+            <svg viewBox="0 0 24 24" class="absolute top-6 right-6 w-10 h-10 text-signal-100" fill="currentColor" aria-hidden="true">
+              <path d="M9.17 6C5.94 6 4 8.34 4 11.32c0 2.83 1.94 5.18 4.7 5.18 2.34 0 3.84-1.5 3.84-3.36 0-1.7-1.16-2.95-2.65-2.95-.32 0-.65.07-.86.14.18-1.32 1.32-2.34 2.94-2.62V6zm10 0C15.94 6 14 8.34 14 11.32c0 2.83 1.94 5.18 4.7 5.18 2.34 0 3.84-1.5 3.84-3.36 0-1.7-1.16-2.95-2.65-2.95-.32 0-.65.07-.86.14.18-1.32 1.32-2.34 2.94-2.62V6z"/>
+            </svg>
+            <div class="flex items-center gap-0.5 mb-4" aria-label="5 av 5 stjärnor">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-4 h-4 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+            </div>
+            <blockquote class="text-xl text-ink leading-relaxed font-medium">
+              &ldquo;Smidigt att boka och få tid. Arbetet gick fort och kan inte vara annat än supernöjd.&rdquo;
+            </blockquote>
+            <figcaption class="mt-5 text-xs text-ink-muted">
+              Omdöme från Google
+            </figcaption>
+          </figure>
+
+          <!-- Second verified review -->
+          <figure class="rounded-2xl bg-white border border-line p-6 lg:p-7">
+            <div class="flex items-center gap-0.5 mb-3" aria-label="5 av 5 stjärnor">
+              <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+              <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+            </div>
+            <blockquote class="text-lg text-ink leading-relaxed font-medium">
+              &ldquo;Utmärkt service.&rdquo;
+            </blockquote>
+            <figcaption class="mt-4 text-xs text-ink-muted">
+              Omdöme från Google
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== BILVERKSTAD I VELLINGE (lokalt omnejd-block) ============================== -->
+  <section class="py-20 lg:py-24 bg-brand-50 border-y border-brand-100">
+    <div class="max-w-4xl mx-auto px-5 lg:px-8 text-center reveal">
+      <h2 class="display-2 text-2xl lg:text-3xl text-ink">
+        Bilverkstad i Vellinge för service, däck och reparationer
+      </h2>
+      <p class="mt-5 text-lg text-ink-muted leading-relaxed">
+        Letar du efter bilverkstad i Vellinge? Hos Vellinge Bilverkstad AB får du hjälp med bilservice, däckbyte, bromsar, batteri, elektronisk felsökning och reparationer. Vi hjälper kunder i Vellinge med omnejd och gör det enkelt att boka verkstadstid via MECA.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener"
+           class="btn inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white font-semibold px-5 py-3 hover:bg-brand-700">
+          Boka verkstadstid
+        </a>
+        <a href="tel:+4640221014"
+           class="btn inline-flex items-center gap-2 rounded-lg border border-line text-ink-soft font-semibold px-5 py-3 hover:border-brand-300 hover:text-brand-700">
+          Ring 040-22 10 14
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== BOOKING CTA ============================== -->
+  <section id="boka" class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="rounded-3xl bg-gradient-to-br from-brand-600 to-brand-800 px-7 py-12 lg:px-16 lg:py-16 text-white relative overflow-hidden reveal">
+        <!-- decorative pattern -->
+        <div class="absolute -right-12 -bottom-12 w-72 h-72 rounded-full bg-signal-400/10 blur-2xl" aria-hidden="true"></div>
+        <div class="absolute -left-12 -top-12 w-72 h-72 rounded-full bg-signal-400/10 blur-2xl" aria-hidden="true"></div>
+
+        <div class="relative max-w-3xl">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-signal-400">Boka tid</p>
+          <h2 class="display-2 mt-2 text-3xl lg:text-4xl">Boka tid för din bil</h2>
+          <p class="mt-5 text-white/85 text-lg leading-relaxed max-w-2xl">
+            Behöver du service, däckbyte, bromsjobb eller felsökning? Boka verkstadstid online eller ring oss så hjälper vi dig vidare.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener"
+               class="btn inline-flex items-center gap-2 rounded-lg bg-signal-400 text-ink font-bold px-5 py-3.5 hover:bg-signal-500">
+              Boka via MECA
+              <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+            <a href="tel:+4640221014"
+               class="btn inline-flex items-center gap-2 rounded-lg bg-white text-brand-700 font-bold px-5 py-3.5 hover:bg-white/95">
+              Ring 040-22 10 14
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CONTACT / HITTA HIT ============================== -->
+  <section id="kontakt" class="py-20 lg:py-28 bg-white border-t border-line">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-16">
+        <div class="lg:col-span-5 reveal">
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-600">Kontakt</p>
+          <h2 class="display-2 mt-2 text-3xl lg:text-4xl text-ink">Kontakta Vellinge Bilverkstad AB</h2>
+          <p class="mt-5 text-ink-muted text-lg leading-relaxed">
+            Vi finns på Mejsegatan 8 i Vellinge. Ring, mejla eller boka direkt via MECA.
+          </p>
+
+          <div class="mt-7 space-y-4">
+            <div class="flex items-start gap-3">
+              <span class="grid place-items-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600 shrink-0">
+                <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-ink-muted">Adress</p>
+                <p class="mt-1 text-base font-extrabold text-ink">Mejsegatan 8</p>
+                <p class="text-sm text-ink-muted">235 32 Vellinge</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="grid place-items-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600 shrink-0">
+                <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-ink-muted">Telefon</p>
+                <a href="tel:+4640221014" class="mt-1 block text-base font-extrabold text-ink hover:text-brand-600">040-22 10 14</a>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="grid place-items-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600 shrink-0">
+                <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+              </span>
+              <div class="leading-tight">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-ink-muted">E-post</p>
+                <a href="mailto:vellinge@mecabilservice.se" class="mt-1 block text-base font-extrabold text-ink hover:text-brand-600 break-all">vellinge@mecabilservice.se</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-7 flex flex-wrap gap-3">
+            <a href="tel:+4640221014" class="btn inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white font-semibold px-4 py-2.5 hover:bg-brand-700">
+              Ring oss
+            </a>
+            <a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener" class="btn inline-flex items-center gap-2 rounded-lg bg-signal-400 text-ink font-bold px-4 py-2.5 hover:bg-signal-500">
+              Boka verkstadstid
+            </a>
+            <a href="#karta" class="btn inline-flex items-center gap-2 rounded-lg border border-line text-ink-soft font-semibold px-4 py-2.5 hover:border-brand-300 hover:text-brand-700">
+              Hitta hit
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 reveal">
+          <div id="karta" class="relative rounded-2xl overflow-hidden border border-line shadow-card bg-brand-50">
+            <!-- OpenStreetMap embed, Mejsegatan 8, Vellinge -->
+            <iframe
+              class="map-frame w-full"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=12.992%2C55.460%2C13.022%2C55.476&layer=mapnik&marker=55.4663%2C13.0070"
+              style="border:0;"
+              loading="lazy"
+              title="Karta över Vellinge Bilverkstad AB, Mejsegatan 8, Vellinge"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            <div class="px-5 py-3 bg-white border-t border-line flex flex-wrap items-center justify-between gap-3">
+              <p class="text-sm text-ink-muted">
+                <span class="font-bold text-ink">Mejsegatan 8, 235 32 Vellinge</span> · MECA-ansluten verkstad
+              </p>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Mejsegatan+8%2C+235+32+Vellinge" target="_blank" rel="noopener"
+                 class="btn inline-flex items-center gap-1.5 text-sm font-bold text-brand-700 hover:text-brand-800">
+                Öppna i Google Maps
+                <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Opening hours -->
+          <div class="mt-5 rounded-2xl bg-canvas border border-line p-5">
+            <div class="flex items-center gap-2.5 mb-3">
+              <svg viewBox="0 0 24 24" class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <h3 class="text-sm font-extrabold uppercase tracking-wider text-ink">Öppettider</h3>
+            </div>
+            <dl class="text-sm space-y-1.5">
+              <div class="flex justify-between gap-4">
+                <dt class="text-ink-muted">Mån - fre</dt>
+                <dd class="font-semibold text-ink">08:15 - 16:30</dd>
+              </div>
+              <div class="flex justify-between gap-4">
+                <dt class="text-ink-muted">Lör - sön</dt>
+                <dd class="font-semibold text-ink-muted">Stängt</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== FOOTER ============================== -->
+  <footer class="bg-ink text-white">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14">
+      <div class="grid lg:grid-cols-12 gap-10">
+        <div class="lg:col-span-5">
+          <div class="flex items-center gap-2.5">
+            <span class="grid place-items-center w-9 h-9 rounded-lg bg-signal-400 text-ink" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-2.5z"/>
+              </svg>
+            </span>
+            <span class="leading-none">
+              <span class="block text-base font-extrabold">Vellinge Bilverkstad</span>
+              <span class="block text-[11px] font-semibold tracking-[0.18em] uppercase text-white/60">MECA-ansluten verkstad</span>
+            </span>
+          </div>
+          <p class="mt-4 text-white/70 text-sm leading-relaxed max-w-sm">
+            Vellinge Bilverkstad AB hjälper bilägare med service, däck, bromsar, batteri och felsökning. Boka enkelt online eller ring oss.
+          </p>
+          <address class="not-italic mt-5 text-sm text-white/80 leading-relaxed">
+            Mejsegatan 8<br/>
+            235 32 Vellinge<br/>
+            <a href="tel:+4640221014" class="hover:text-signal-400 font-semibold">040-22 10 14</a><br/>
+            <a href="mailto:vellinge@mecabilservice.se" class="hover:text-signal-400">vellinge@mecabilservice.se</a>
+          </address>
+        </div>
+
+        <div class="lg:col-span-4 grid grid-cols-2 gap-6">
+          <div>
+            <h4 class="text-[11px] font-bold uppercase tracking-wider text-white/60">Sidor</h4>
+            <ul class="mt-4 space-y-2.5 text-sm">
+              <li><a href="#tjanster" class="text-white/85 hover:text-signal-400">Tjänster</a></li>
+              <li><a href="#omdomen" class="text-white/85 hover:text-signal-400">Omdömen</a></li>
+              <li><a href="#kontakt" class="text-white/85 hover:text-signal-400">Kontakt</a></li>
+              <li><a href="#boka" class="text-white/85 hover:text-signal-400">Boka tid</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-[11px] font-bold uppercase tracking-wider text-white/60">Boka &amp; hitta</h4>
+            <ul class="mt-4 space-y-2.5 text-sm">
+              <li><a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener" class="text-white/85 hover:text-signal-400">Boka via MECA</a></li>
+              <li><a href="tel:+4640221014" class="text-white/85 hover:text-signal-400">Ring oss</a></li>
+              <li><a href="#karta" class="text-white/85 hover:text-signal-400">Hitta hit</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="lg:col-span-3">
+          <!-- MECA partner badge (samma stil som hero) -->
+          <div class="inline-flex h-8 items-center rounded-md bg-white/10 px-3 ring-1 ring-inset ring-white/20">
+            <img
+              src="images/meca-logo.svg"
+              alt="MECA"
+              class="h-5 w-auto"
+              style="max-height:20px;width:auto;"
+            />
+          </div>
+          <p class="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85">
+            Ansluten verkstad i Vellinge
+          </p>
+          <h4 class="mt-6 text-[11px] font-bold uppercase tracking-wider text-white/60">Följ &amp; omdömen</h4>
+          <p class="mt-4 text-sm text-white/75 leading-relaxed">
+            Vi uppskattar varje recension. Lämna gärna ett omdöme efter ditt besök.
+          </p>
+          <a href="https://www.google.com/maps/search/?api=1&query=Vellinge+Bilverkstad+AB" target="_blank" rel="noopener"
+             class="btn mt-4 inline-flex items-center gap-2 rounded-lg bg-white/10 hover:bg-white/15 border border-white/20 text-sm font-semibold px-4 py-2.5">
+            <svg viewBox="0 0 24 24" class="w-4 h-4 text-signal-400" fill="currentColor"><path d="M12 2l2.95 6.91L22 9.74l-5.5 4.73L18.18 22 12 18.27 5.82 22l1.68-7.53L2 9.74l7.05-.83L12 2z"/></svg>
+            Lämna omdöme
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+        <p class="text-xs text-white/55">© <span id="year"></span> Vellinge Bilverkstad AB. Alla rättigheter förbehållna.</p>
+        <p class="text-xs text-white/55">MECA-ansluten verkstad. Boka enkelt online eller ring oss.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================== STICKY MOBILE BOTTOM BAR ============================== -->
+  <nav aria-label="Snabbåtgärder" class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-line shadow-[0_-4px_20px_rgba(14,27,46,0.08)] pb-[env(safe-area-inset-bottom)]">
+    <div class="grid grid-cols-3">
+      <a href="tel:+4640221014" class="flex flex-col items-center justify-center py-3 gap-0.5 text-ink-soft hover:text-brand-600">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span class="text-[11px] font-bold">Ring</span>
+      </a>
+      <a href="https://boka.meca.se/?workshop=b338304e-3b78-f011-b4cb-7c1e52616de2" target="_blank" rel="noopener" class="flex flex-col items-center justify-center py-3 gap-0.5 bg-signal-400 text-ink">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span class="text-[11px] font-bold">Boka</span>
+      </a>
+      <a href="#karta" class="flex flex-col items-center justify-center py-3 gap-0.5 text-ink-soft hover:text-brand-600">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span class="text-[11px] font-bold">Hitta hit</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ============================== SCRIPT ============================== -->
+  <script>
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Lightweight scroll reveal (respects prefers-reduced-motion)
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const targets = document.querySelectorAll('.reveal');
+      if (reduce) {
+        targets.forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+      if (!('IntersectionObserver' in window)) {
+        targets.forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      targets.forEach(el => io.observe(el));
+    })();
+  </script>
+</body>
+</html>
